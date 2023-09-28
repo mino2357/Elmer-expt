@@ -1,0 +1,110 @@
+Header
+  CHECK KEYWORDS Warn
+  Mesh DB "." "."
+  Include Path ""
+  Results Directory ""
+End
+
+Simulation
+  Max Output Level = 5
+  Coordinate System = Cartesian
+  Coordinate Mapping(3) = 1 2 3
+  Simulation Type = Transient
+  Steady State Max Iterations = 1
+  Output Intervals(1) = 10
+  Timestep intervals(1) = 10000
+  Timestep Sizes(1) = 0.002
+  Timestepping Method = BDF
+  BDF Order = 2
+  Solver Input File = case.sif
+  Post File = case.vtu
+End
+
+Constants
+  Gravity(4) = 0 -1 0 9.82
+  Stefan Boltzmann = 5.670374419e-08
+  Permittivity of Vacuum = 8.85418781e-12
+  Permeability of Vacuum = 1.25663706e-6
+  Boltzmann Constant = 1.380649e-23
+  Unit Charge = 1.6021766e-19
+End
+
+Body 1
+  Target Bodies(1) = 11
+  Name = "Body Property 1"
+  Equation = 1
+  Material = 1
+  Body Force = 1
+  Initial condition = 1
+End
+
+Solver 1
+  Equation = Navier-Stokes
+  Procedure = "FlowSolve" "FlowSolver"
+  Variable = Flow Solution[Velocity:2 Pressure:1]
+  Exec Solver = Always
+  Stabilize = True
+  Optimize Bandwidth = True
+  Steady State Convergence Tolerance = 1.0e-5
+  Nonlinear System Convergence Tolerance = 1.0e-8
+  Nonlinear System Max Iterations = 20
+  Nonlinear System Newton After Iterations = 3
+  Nonlinear System Newton After Tolerance = 1.0e-3
+  Nonlinear System Relaxation Factor = 1
+  Linear System Solver = Iterative
+  Linear System Iterative Method = BiCGStab
+  Linear System Max Iterations = 200
+  Linear System Convergence Tolerance = 1.0e-9
+  BiCGstabl polynomial degree = 2
+  Linear System Preconditioning = ILU0
+  Linear System ILUT Tolerance = 1.0e-3
+  Linear System Abort Not Converged = False
+  Linear System Residual Output = 10
+  Linear System Precondition Recompute = 1
+End
+
+Equation 1
+  Name = "Flow"
+  Active Solvers(1) = 1
+End
+
+Material 1
+  Name = "Air (room temperature)"
+  Compressibility Model = Incompressible
+  Relative Permittivity = 1.00059
+  Density = 1.205
+  Viscosity = 1.983e-5
+  Sound speed = 343.0
+  Heat Conductivity = 0.0257
+  Heat expansion Coefficient = 3.43e-3
+  Heat Capacity = 1005.0
+End
+
+Body Force 1
+  Name = "BodyForce 1"
+End
+
+Initial Condition 1
+  Name = "InitialCondition 1"
+  Velocity 3 = 0
+  Velocity 2 = 0
+  Velocity 1 = 10
+  Pressure = 0
+End
+
+Boundary Condition 1
+  Target Boundaries(1) = 8 
+  Name = "outlet"
+End
+
+Boundary Condition 2
+  Target Boundaries(1) = 7 
+  Name = "inlet"
+  Velocity 1 = 10
+End
+
+Boundary Condition 3
+  Target Boundaries(2) = 9 10 
+  Name = "noslip"
+  Noslip wall BC = True
+End
