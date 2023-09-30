@@ -1,0 +1,14 @@
+!------ Skeleton for body section -----
+Body 1
+  Name = Fluid
+End
+
+!------ Skeleton for boundary section -----
+Boundary Condition 1
+  Name = MovingWall
+End
+
+Boundary Condition 2
+  Name = Wall
+End
+
