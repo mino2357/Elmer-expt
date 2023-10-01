@@ -1,2 +1,9 @@
 *.msh
 mesh.*
+*.vtu
+*.pvtu
+*.csv
+*.dat
+*.log
+*.txt
+partitioning*

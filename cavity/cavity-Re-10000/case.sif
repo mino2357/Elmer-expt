@@ -15,7 +15,7 @@ Simulation
   Timestep intervals(1) = 10000000
   Timestep Sizes(1) = 0.005
   Timestepping Method = BDF
-  BDF Order = 1
+  BDF Order = 3
   Solver Input File = case.sif
   Post File = case.vtu
 End
@@ -54,7 +54,7 @@ Solver 1
   Linear System Solver = Iterative
   Linear System Iterative Method = BiCGStab
   Linear System Max Iterations = 500
-  Linear System Convergence Tolerance = 1.0e-10
+  Linear System Convergence Tolerance = 1.0e-12
   BiCGstabl polynomial degree = 2
   Linear System Preconditioning = ILU0
   Linear System ILUT Tolerance = 1.0e-3
@@ -70,7 +70,7 @@ End
 
 Material 1
   Name = "Material 1"
-  Viscosity = 0.001
+  Viscosity = 0.0001
   Reference Pressure = 0
   Compressibility Model = Incompressible
   Density = 1.0
