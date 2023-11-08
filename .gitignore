@@ -7,3 +7,4 @@ mesh.*
 *.log
 *.txt
 partitioning*
+*.result
