@@ -1,0 +1,139 @@
+Header
+  CHECK KEYWORDS Warn
+  Mesh DB "./cube" "."
+  Include Path ""
+  Results Directory "."
+End
+
+Simulation
+  Max Output Level = 3
+  Coordinate System = Cartesian
+  Coordinate Mapping(3) = 1 2 3
+  Simulation Type = Transient
+  Steady State Max Iterations = 1
+  Output Intervals(1) = 1
+  Timestep intervals(1) = 100000
+  Timestep Sizes(1) = 0.01
+  Timestepping Method = BDF
+  BDF Order = 2
+  Solver Input File = case.sif
+  Post File = case.vtu
+  Output File = "case.result"
+  ! Restart File = "case.result"
+End
+
+Constants
+End
+
+Body 1
+  Target Bodies(1) = 26
+  Name = "Body 1"
+  Equation = 1
+  Material = 1
+  Initial condition = 1
+End
+
+Solver 2
+  Equation = Navier-Stokes
+  Variable = Flow Solution[Velocity:2 Pressure:1]
+  Procedure = "FlowSolve" "FlowSolver"
+  Exec Solver = Always
+  Stabilize = False
+  Div Discretization = True
+  Optimize Bandwidth = True
+  Steady State Convergence Tolerance = 1.0e-5
+  Nonlinear System Convergence Tolerance = 1.0e-3
+  Nonlinear System Max Iterations = 20
+  Nonlinear System Newton After Iterations = 3
+  Nonlinear System Newton After Tolerance = 1.0e-3
+  Nonlinear System Relaxation Factor = 1
+  Linear System Solver = Iterative
+!  Linear System Direct Method = CPardiso ! mumps
+  Linear System Iterative Method = BiCGstab ! GMRES ! BiCGstab
+  Linear System Max Iterations = 500
+  Linear System Convergence Tolerance = 1.0e-10
+!  BiCGstabl polynomial degree = 2
+!  Idrs Parameter = 8
+  Linear System Preconditioning = ILU3
+  Linear System ILUT Tolerance = 1.0e-3
+  Linear System Abort Not Converged = False
+  Linear System Residual Output = 10
+  Linear System Precondition Recompute = 1
+End
+
+Solver 1
+  Equation = Advection Diffusion Equation
+  Variable = Concentration
+  Procedure = "AdvectionDiffusion" "AdvectionDiffusionSolver"
+  Exec Solver = Always
+  Stabilize = True
+  Optimize Bandwidth = True
+  Steady State Convergence Tolerance = 1.0e-12
+  Nonlinear System Convergence Tolerance = 1.0e-12
+  Nonlinear System Max Iterations = 20
+  Nonlinear System Newton After Iterations = 3
+  Nonlinear System Newton After Tolerance = 1.0e-6
+  Nonlinear System Relaxation Factor = 1
+  Linear System Solver = Iterative
+  Linear System Iterative Method = BiCGStab
+  Linear System Max Iterations = 500
+  Linear System Convergence Tolerance = 1.0e-12
+  BiCGstabl polynomial degree = 2
+  Linear System Preconditioning = ILU0
+  Linear System ILUT Tolerance = 1.0e-3
+  Linear System Abort Not Converged = False
+  Linear System Residual Output = 10
+  Linear System Precondition Recompute = 1
+End
+
+Equation 1
+  Name = "Equation 1"
+  Concentration Convection = Computed
+  Concentration Units = Absolute Mass
+  Active Solvers(2) = 2 1
+End
+
+Material 1
+  Name = "fluid"
+  Concentration Diffusivity = 0
+  Heat Conductivity = 0.17
+  Heat expansion Coefficient = 0.72e-3
+  Relative Permittivity = 3.1
+  Density = 915.0
+  Sound speed = 1430.0
+  Viscosity = 0.001
+  Heat Capacity = 1970.0
+End
+
+Initial Condition 1
+  Name = "InitialCondition 1"
+  Concentration = 0
+  Velocity 2 = 0
+  Velocity 1 = 1
+End
+
+Boundary Condition 1
+  Target Boundaries(1) = 22 
+  Name = "BoundaryCondition 1"
+  Velocity 1 = 1
+  Concentration = Variable coordinate 1, coordinate 2, coordinate 3
+    Real MATC "if (tx(1)>2.4 & tx(1)<2.6) 1.0; else 0.0"
+End
+
+Boundary Condition 2
+  Target Boundaries(1) = 23 
+  Name = "BoundaryCondition 2"
+  Velocity 2 = 0
+End
+
+Boundary Condition 3
+  Target Boundaries(1) = 24 
+  Name = "BoundaryCondition 3"
+  Velocity 2 = 0
+End
+
+Boundary Condition 4
+  Target Boundaries(1) = 25 
+  Name = "BoundaryCondition 4"
+  Noslip wall BC = True
+End
