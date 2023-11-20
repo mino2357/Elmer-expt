@@ -6,5 +6,8 @@ mesh.*
 *.dat
 *.log
 *.txt
+*.so
+*.xml
+ELMERSOLVER_STARTINFO
 partitioning*
 *.result
