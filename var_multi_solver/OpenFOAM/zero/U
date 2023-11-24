@@ -1,0 +1,57 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2306                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volVectorField;
+    object      U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 1 -1 0 0 0 0];
+
+internalField   uniform (0 0 0);
+
+boundaryField
+{
+    Inlet
+    {
+	type		codedFixedValue;
+	name		test;
+	value		uniform (0 0 0);
+
+	code
+	#{
+		fvPatchField<vector> f
+		(
+			patch().lookupPatchField<volVectorField, vector>("U")
+		);
+
+		forAll(f, i)
+		{
+			const scalar y = patch().Cf()[i][1];
+			f[i] = vector(4.0 * y * (1.0 - y), 0.0, 0.0);
+		}
+		operator==(f);
+    	#};
+    }
+
+    Outlet
+    {
+        type            zeroGradient;
+    }
+
+    Wall
+    {
+        type            noSlip;
+    }
+}
+
+
+// ************************************************************************* //
