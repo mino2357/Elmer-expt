@@ -42,6 +42,15 @@
 - MATCManual.pdf               2023-04-06
   - 境界条件などを数式で与える場合，MATCで書くことになるので必読．
 
+## 実験一覧
 
+[2次元流体の検証，OpenFOAMとの比較](2d-flow-verification/README.md)
 
+WIP [流れと音と密度の実験](acoustic/README.md)
 
+[キャビティ流れ](cavity/README.md)
+
+[反応拡散方程式](Gray-Scott/README.md)
+- issueあり．https://github.com/mino2357/Elmer-expt/issues/1
+
+WIP [流れ場で駆動するスカラー](scalarDrivenByFluid/README.md)

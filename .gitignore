@@ -1,7 +1,9 @@
 *.msh
 mesh.*
+*.opt
 *.vtu
 *.pvtu
+*.pvsm
 *.csv
 *.dat
 *.log
