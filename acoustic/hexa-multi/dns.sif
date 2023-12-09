@@ -9,7 +9,7 @@ Simulation
   Timestepping Method = BDF
   BDF Order = 2
   Timestep intervals = 10000
-  Timestep sizes = 0.0002
+  Timestep sizes = 0.001
   Output Intervals(1) = 1
   Post File   = "tube.vtu"
   Steady State Max Iterations = 1
@@ -24,25 +24,25 @@ Body 1
 End
 
 Equation 1
-  Active Solvers(1) = 1
+  Active Solvers(2) = 1 2
 End
 
 Material 1
   Equilibrium Temperature = Real 293
   Equilibrium Density = Real 1.21
-  Viscosity = Real 1.0e-2
-  Bulk Viscosity = Real 0.0e-3
+  Viscosity = Real 1.82e-2
+  Bulk Viscosity = Real 0.0e-5
   Specific Heat = Real 717.0
   ! Heat Conductivity = Real 0.026
   Specific Heat Ratio = Real 1.4
-  ! Density = 1
-  Heat Conductivity = 100.0
+  Density = 1
+  Heat Conductivity = 1.0
 End
 
 Solver 1
   Equation = "Compressible NS"
 
-  Variable = -dofs 4 "NSSol"
+  Variable = -global -dofs 4 "NSSol"
   Procedure = "CompressibleNS" "CompressibleNS"  
   Bubbles in Global System = Logical True
   Element = "p:1 b:1"
@@ -63,34 +63,66 @@ Solver 1
   Steady State Convergence Tolerance = 1e-6
 End
 
+Solver 2
+  Equation = "Heat Equation"
+  Variable = heat
+  Variable DOFs = 1
+
+  Exec Solver = Always
+
+  Exported Variable 4 = -dofs 3 NSSol
+
+  Stabilize = True
+  Optimize Bandwidth = True
+
+  Steady State Convergence Tolerance = 1.0e-5
+  Nonlinear System Convergence Tolerance = 1.0e-3
+  Nonlinear System Max Iterations = 20
+  Nonlinear System Newton After Iterations = 3
+  Nonlinear System Newton After Tolerance = 1.0e-3
+  Nonlinear System Relaxation Factor = 1
+  Linear System Solver = Iterative
+!  Linear System Direct Method = CPardiso ! mumps
+  Linear System Iterative Method = BiCGstab ! GMRES ! BiCGstab
+  Linear System Max Iterations = 500
+  Linear System Convergence Tolerance = 1.0e-10
+!  BiCGstabl polynomial degree = 2
+!  Idrs Parameter = 8
+  Linear System Preconditioning = ILU3
+  Linear System ILUT Tolerance = 1.0e-3
+  Linear System Abort Not Converged = False
+  Linear System Residual Output = 10
+  Linear System Precondition Recompute = 1
+End
+
 Initial Condition 1
-  NSSol 1 = Real 30.0
+  NSSol 1 = Real 1.0
   NSSol 2 = Real 0.0
   NSSol 3 = Real 0.0  
 End
 
 Boundary Condition 1 
-  Target Boundaries(1) = 22 ! inlet
-  NSSol 1 = Real 30.0
+  Target Boundaries(1) = 22
+  NSSol 1 = Real 1.0
+  NSSol 2 = Real 0.0
+  ! NSSol 3 = Real 0.0  
+End
+
+Boundary Condition 2
+  Target Boundaries(1) = Integer 23
   NSSol 2 = Real 0.0
   NSSol 3 = Real 0.0  
 End
 
-Boundary Condition 2
-  Target Boundaries(1) = Integer 23 ! outlet
-  ! NSSol 2 = Real 30.0
-  NSSol 3 = Real 0.0  
-End
-
 Boundary Condition 3
-  Target Boundaries(1) = Integer 24 ! side
-  ! NSSol 1 = Real 30.0
+  Target Boundaries(1) = Integer 24
+  NSSol 1 = Real 1.0
   NSSol 2 = Real 0.0
   NSSol 3 = Real 0.0  
 End
 
 Boundary Condition 4
-  Target Boundaries(1) = Integer 25 ! wall
+  Target Boundaries(1) = Integer 25
   NSSol 1 = Real 0.0
   NSSol 2 = Real 0.0
   NSSol 3 = Real 0.0  

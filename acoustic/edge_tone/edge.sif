@@ -1,23 +1,29 @@
 Header
- Mesh DB "." "cube"
+ Mesh DB "." "./edge"
 End
 
 Simulation
   Max Output Level = 5
   Coordinate System = "Cartesian 2D"
   Simulation Type = Transient
+
   Timestepping Method = BDF
   BDF Order = 2
-  Timestep intervals = 10000
-  Timestep sizes = 0.0002
-  Output Intervals(1) = 1
-  Post File   = "tube.vtu"
+
+  Timestep intervals = 10000000
+  Timestep sizes = 0.00000005 ! 0.01 / 100 / 350 = 2.8e-7
+  Output Intervals(1) = 10
+
   Steady State Max Iterations = 1
   Serendipity P Elements = False
+  Post File   = "edge.vtu"
+  Output File = "edge.result"
+  Restart File = "edge.result"
+!  Restart Position = 1400
 End
 
 Body 1
-  Target Bodies(1) = 26
+  Target Bodies(1) = 25
   Equation = 1
   Material = 1
   Initial condition = 1
@@ -28,15 +34,15 @@ Equation 1
 End
 
 Material 1
-  Equilibrium Temperature = Real 293
-  Equilibrium Density = Real 1.21
-  Viscosity = Real 1.0e-2
+  Equilibrium Temperature = Real 293.0
+  Equilibrium Density = Real 1.205784912 ! p=101325
+
+  Viscosity = Real 1.0e-3 ! hennkou
   Bulk Viscosity = Real 0.0e-3
+
   Specific Heat = Real 717.0
-  ! Heat Conductivity = Real 0.026
+  Heat Conductivity = Real 0.026
   Specific Heat Ratio = Real 1.4
-  ! Density = 1
-  Heat Conductivity = 100.0
 End
 
 Solver 1
@@ -50,13 +56,13 @@ Solver 1
   Nonlinear Iteration Method = String "Picard"
   Nonlinear System Relaxation Factor = 1
   Nonlinear System Max Iterations = 20
-  Nonlinear System Convergence Tolerance = Real 1.0e-4
+  Nonlinear System Convergence Tolerance = Real 1.0e-6
   Nonlinear System Convergence Measure = String "Solution"
 
-!  Linear System Solver = Direct
-!  Linear System Direct Method = UMFPack
   Linear System Solver = Iterative
   Linear System Iterative Method = BiCGStabl
+  BiCGstabl polynomial degree = 2
+
   Linear System Max Iterations = 1000
   Linear System Convergence Tolerance = 1.0e-13
   Linear System Preconditioning = ILU3
@@ -64,34 +70,23 @@ Solver 1
 End
 
 Initial Condition 1
-  NSSol 1 = Real 30.0
-  NSSol 2 = Real 0.0
-  NSSol 3 = Real 0.0  
+  NSSol 1 = Real 0.0 ! vel x
+  NSSol 2 = Real 0.0 ! vel y
+  NSSol 3 = Real 0.0 ! delta temperature
+  NSSol 4 = Real 0.0 ! delta density
 End
 
-Boundary Condition 1 
-  Target Boundaries(1) = 22 ! inlet
-  NSSol 1 = Real 30.0
+Boundary Condition 1
+  Target Boundaries(1) = 23 ! inlet
+  NSSol 1 = Variable Coordinate 2
+    Real MATC "if (tx>-0.0015 & tx<-0.0005) (-abs(20000.0*(tx + 0.001)) + 10.0); else 0.0;"
   NSSol 2 = Real 0.0
-  NSSol 3 = Real 0.0  
-End
-
-Boundary Condition 2
-  Target Boundaries(1) = Integer 23 ! outlet
-  ! NSSol 2 = Real 30.0
-  NSSol 3 = Real 0.0  
-End
-
-Boundary Condition 3
-  Target Boundaries(1) = Integer 24 ! side
-  ! NSSol 1 = Real 30.0
-  NSSol 2 = Real 0.0
-  NSSol 3 = Real 0.0  
+  NSSol 3 = Real 0.0
 End
 
 Boundary Condition 4
-  Target Boundaries(1) = Integer 25 ! wall
+  Target Boundaries(1) = Integer 24 ! wall
   NSSol 1 = Real 0.0
   NSSol 2 = Real 0.0
-  NSSol 3 = Real 0.0  
+  NSSol 3 = Real 0.0
 End

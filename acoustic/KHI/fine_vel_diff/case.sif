@@ -1,0 +1,108 @@
+Header
+ Mesh DB "." "./square"
+End
+
+Simulation
+  Max Output Level = 5
+  Coordinate System = "Cartesian 2D"
+  Simulation Type = Transient
+
+  Timestepping Method = BDF
+  BDF Order = 2
+
+  Timestep intervals = 100000000
+  Timestep sizes = 0.0005
+  Output Intervals(1) = 2
+
+  Steady State Max Iterations = 1
+!  Serendipity P Elements = False
+  Post File   = "square.vtu"
+  Output File = "square.result"
+!  Restart File = "square.result"
+!  Restart Position = 1400
+
+  Set Dirichlet BCs by BC Numbering = True
+End
+
+Body 1
+  Target Bodies(1) = 9
+  Equation = 1
+  Material = 1
+  Initial condition = 1
+  Body Force = 1
+End
+
+Equation 1
+  Active Solvers(1) = 1
+End
+
+Material 1
+  Equilibrium Temperature = Real 2.930
+  Equilibrium Density = Real 1.205784912 ! p=101325
+
+  Viscosity = Real 1.0e-3 ! hennkou
+  Bulk Viscosity = Real 0.0e-3
+
+  Specific Heat = Real 717.0
+  Heat Conductivity = Real 1.0 ! 0.026
+  Specific Heat Ratio = Real 1.4
+End
+
+Solver 1
+  Equation = "Compressible NS"
+
+  Variable = -dofs 4 "NSSol"
+  Procedure = "CompressibleNS" "CompressibleNS"  
+  Bubbles in Global System = Logical True
+  Element = "p:1 b:1"
+
+  Nonlinear Iteration Method = String "Picard"
+  Nonlinear System Relaxation Factor = 1
+  Nonlinear System Max Iterations = 20
+  Nonlinear System Convergence Tolerance = Real 1.0e-6
+  Nonlinear System Convergence Measure = String "Solution"
+
+  Linear System Solver = Iterative
+  Linear System Iterative Method = BiCGStabl
+  BiCGstabl polynomial degree = 2
+
+  Linear System Max Iterations = 1000
+  Linear System Convergence Tolerance = 1.0e-13
+  Linear System Preconditioning = ILU2
+  Steady State Convergence Tolerance = 1e-6
+End
+
+Initial Condition 1
+  NSSol 1 = Variable coordinate 1, coordinate 2, coordinate 3
+    Real MATC "if (tx(1)>0.4 & tx(1)<0.6) 10.0; else -5.0" ! vel x
+  NSSol 2 = Real 0.0 ! vel y
+  NSSol 3 = Real 0.0 ! delta temperature
+  NSSol 4 = Variable coordinate 1, coordinate 2 ! delta density
+    Real MATC "0.01*exp(-100.0*((tx(0)-0.5)*(tx(0)-0.5)+(tx(1)-0.4)*(tx(1)-0.4)))"
+End
+
+Boundary Condition 1
+  Target Boundaries(1) = 7 ! top
+  Periodic BC = 2
+  Periodic BC NSSol 1 = Logical True
+  Periodic BC NSSol 2 = Logical True
+  Periodic BC NSSol 3 = Logical True
+  Periodic BC NSSol 4 = Logical True
+End
+
+Boundary Condition 2
+  Target Boundaries(1) = 8 ! bettom
+End
+
+Boundary Condition 3
+  Target Boundaries(1) = 5 ! left
+  Periodic BC = 4
+  Periodic BC NSSol 1 = Logical True
+  Periodic BC NSSol 2 = Logical True
+  Periodic BC NSSol 3 = Logical True
+  Periodic BC NSSol 4 = Logical True
+End
+
+Boundary Condition 4
+  Target Boundaries(1) = 6 ! right
+End
