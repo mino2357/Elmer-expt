@@ -54,3 +54,29 @@ WIP [流れと音と密度の実験](acoustic/README.md)
 - issueあり．https://github.com/mino2357/Elmer-expt/issues/1
 
 WIP [流れ場で駆動するスカラー](scalarDrivenByFluid/README.md)
+
+## 線形ソルバ
+
+NS 方程式で使うもののまとめ．
+
+```
+  Equation = Navier-Stokes ! NSの特殊性より必要キーワード。NS用に離散化される。
+
+  Stabilization Method=Stabilized ! 必要。圧縮性ならBubble functionが使われる。上のスライドの行列。
+
+  Steady State Convergence Tolerance = 1.0e-5 ! 定常問題なら必要。その判定。相対誤差。
+
+  Nonlinear System Convergence Tolerance = 1.0e-8 ! ニュートン反復での収束判定。
+  Nonlinear System Max Iterations = 20 ! そのままの意味。
+  Nonlinear System Newton After Iterations = 3 ! ピカール反復を何回するか。
+  Nonlinear System Relaxation Factor = 1 ! よく反復法関連で出てくる緩和係数みたいなやつ。
+  Nonlinear System Newton After Tolerance = 1.0e-3 ! これ以下になったらニュートン反復する。
+  Linear System Solver = Iterative ! 反復法で解く。小さい問題ならDirectでも良い。
+  Linear System Symmetric = True ! NSから出てくる行列は対称ではないが既知の値を行列から除外したりゼロにして行列を対称化するか。
+  Linear System Iterative Method = BicgstabL ! そのまま。
+  BiCGStabl polynomial degree = 4 ! そのまま。以下略。
+  Linear System Max Iterations = 500
+  Linear System Convergence Tolerance = 1.0e-10
+  Linear System Residual Output = 10 ! 残差を何回に1回出力するか。
+  Linear System Preconditioning = ILU0
+```
