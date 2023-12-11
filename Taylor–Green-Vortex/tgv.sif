@@ -1,5 +1,5 @@
-$rho = 1.0   ! 密度
-$nu = 0.0001 ! 動粘性係数
+$rho = 10.0   ! 密度
+$nu = 0.001 ! 動粘性係数
 
 Header
   CHECK KEYWORDS Warn
@@ -19,7 +19,7 @@ Simulation
 
 !  Serendipity P Elements = False ! Serendipity 要素を使うか．
 
-  Output Intervals(1) = 1 ! 出力間隔．
+  Output Intervals(1) = 10 ! 出力間隔．
   Timestep intervals(1) = 100000 ! 何ステップ計算するか．
   Timestep Sizes(1) = 0.05 ! 時間刻み幅．
 
@@ -55,7 +55,7 @@ Solver 1
   Exec Solver = Always
 
 !  Bubbles in Global System = Logical True ! Bubble functionを使うか．
-!  Element = "p:1" ! 何次要素を使うか．
+!  Element = "p:2" ! 何次要素を使うか．
 
   Stabilize = True ! FEMの安定化．
   Optimize Bandwidth = True ! 線形ソルバの最適化．
@@ -75,7 +75,7 @@ Solver 1
   BiCGStabl polynomial degree = 2                  ! そのままの意味．以下略．
 
   Linear System Max Iterations = 500
-  Linear System Convergence Tolerance = 1.0e-10
+  Linear System Convergence Tolerance = 1.0e-9
   Linear System Residual Output = 10               ! 残差を何回に1回出力するか。
   Linear System Preconditioning = ILU3             ! 前処理にILU(3)法を使用する．
 End
